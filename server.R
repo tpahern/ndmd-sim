@@ -212,6 +212,45 @@ shinyServer(function(input, output) {
         checksum_s=iprm_lt_1_s+iprm_btw1_iprt_s+iprm_gt_iprt_s,
         checksum_d=iprm_lt_1_d+iprm_btw1_iprt_d+iprm_gt_iprt_d
       ) 
+    
+    # Make output for Shiny page
+    # Summarizing portions of the distribution
+    pct_iprm_lt1_s=100*round(mean(s96$iprm_lt_1_s, na.rm=TRUE), digits=5)
+    pct_iprm_btw1_iprt_s=100*round(mean(s96$iprm_btw1_iprt_s, na.rm=TRUE), digits=5)
+    pct_iprm_gt_iprt_s=100*round(mean(s96$iprm_gt_iprt_s, na.rm=TRUE), digits=5)
+    
+    dens <- 
+      
+      ggplot(data=s96, aes(x=iprm_s)) +
+      geom_density() +
+      geom_vline(aes(xintercept=mean(r_set)), color="blue", linetype="dashed", size=1) +
+      geom_vline(aes(xintercept=exp(mean(log(iprc)))), color="red", linetype="dashed", size=1) +
+      geom_vline(aes(xintercept=1), color="grey", size=1)
+    
+    
+    # add only text to the graph
+    dens + annotate("text", x = 5.75, y = c(0.15,0.2,0.25), 
+                    label = c(paste0("IPRm<1: ", pct_iprm_gt_iprt_s),
+                              paste0("1<= IPRm <=IPRt: ", pct_iprm_btw1_iprt_s), 
+                              paste0("IPRm<1: ", pct_iprm_lt1_s)),
+                    color="orange", 
+                    size=4, fontface="plain",
+                    hjust = "left")
+    
+    
+    # a data frame with all the annotation info
+    annotation <- data.frame(
+      x = c(5.75),
+      y = c(0.15,0.2,0.25),
+      label = c(paste0("IPRm<1: ", pct_iprm_gt_iprt_s),
+                paste0("1<= IPRm <=IPRt: ", pct_iprm_btw1_iprt_s), 
+                paste0("IPRm<1: ", pct_iprm_lt1_s))
+    )
+    # Add text box
+    dens + geom_label(data=annotation, aes(x=x, y=y, label=label),                 
+                      color="orange", 
+                      size=4, fontface="plain",
+                      hjust = "left")
   })
 
 })
