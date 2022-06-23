@@ -1,8 +1,9 @@
 # User interface for simulation of non-differential misclassification of disease under (near)-perfect specificity and imperfect yet (expected) non-differential sensitivity
 
 library(shiny)
+library(shinythemes)
 
-shinyUI(fluidPage(
+shinyUI(fluidPage(theme=shinytheme("superhero"),
 
     # Application title
     titlePanel("NDMD Simulation"),
@@ -14,8 +15,16 @@ shinyUI(fluidPage(
           hr(),
           radioButtons("niter", 
                        "Number of iterations:", 
-                       choices=list("100"=1e2, "1,000"=1e3, "10,000"=1e4, "100,000"=1e5, "1,000,000"=1e6),
-                       selected=1e4),
+                       choices=list("10,000"=1e4, 
+                                    "100,000"=1e5, 
+                                    "1,000,000"=1e6)),
+          radioButtons("studyn",
+                      "Study size:",
+                      choices=list("10,000"=1e4,
+                                   "50,000"=5e4,
+                                   "100,000"=1e5,
+                                   "500,000"=5e5,
+                                   "1,000,000"=1e6)),
           sliderInput("ip_set",
                       "Risk in the unexposed:",
                       min = 0.01,
@@ -43,8 +52,9 @@ shinyUI(fluidPage(
         ),
 
         # Show a plot of the generated distribution
-        mainPanel(
+        mainPanel(h1("Here are your fucking results:"),
             #plotOutput("distPlot")
+          verbatimTextOutput("text")
         )
     )
 ))
